@@ -1,0 +1,51 @@
+// HackVerse Prisma schema
+// Datasource uses MongoDB (Prisma has first-class MongoDB support) via MONGO_URL.
+// If you migrate to PostgreSQL later, only switch the provider + connection string.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URL")
+}
+
+model Hackathon {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug         String   @unique
+  title        String
+  description  String
+  source       String   // e.g. Devpost, Devfolio, MLH, Unstop
+  sourceUrl    String
+  bannerUrl    String?
+  location     String   // Online | City, Country
+  mode         String   // Online | Hybrid | Offline
+  startDate    DateTime
+  endDate      DateTime
+  registerBy   DateTime?
+  prizePool    String?
+  tags         String[]
+  themes       String[]
+  organizer    String
+  participants Int      @default(0)
+  featured     Boolean  @default(false)
+  status       String   @default("upcoming") // upcoming | ongoing | ended
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Subscriber {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
