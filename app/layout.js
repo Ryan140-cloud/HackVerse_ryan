@@ -3,27 +3,28 @@ import { Providers } from './providers';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Toaster } from '@/components/ui/sonner';
+import { siteConfig } from '@/lib/config/site';
 
 export const metadata = {
-  title: 'HackVerse — Discover Hackathons in One Place',
-  description:
-    'HackVerse aggregates ongoing and upcoming hackathons from Devpost, Devfolio, MLH, Unstop and more — all in a single, elegant dashboard for students.',
+  title: {
+    default: `${siteConfig.name} \u2014 Discover Hackathons in One Place`,
+    template: `%s \u00B7 ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
   keywords: [
-    'hackathons',
-    'student hackathons',
-    'devpost',
-    'devfolio',
-    'mlh',
-    'unstop',
-    'hackathon aggregator',
+    'hackathons', 'student hackathons', 'devpost', 'devfolio', 'mlh',
+    'unstop', 'hackathon aggregator',
   ],
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || 'https://hackverse.local'
-  ),
+  authors: [{ name: siteConfig.founder.name }],
+  creator: siteConfig.founder.name,
+  publisher: siteConfig.owner,
+  metadataBase: new URL(siteConfig.url),
   openGraph: {
-    title: 'HackVerse — Discover Hackathons',
-    description: 'One dashboard for every hackathon that matters.',
+    title: `${siteConfig.name} \u2014 Discover Hackathons`,
+    description: siteConfig.tagline,
     type: 'website',
+    url: siteConfig.url,
+    siteName: siteConfig.name,
   },
 };
 
@@ -32,11 +33,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
           rel="stylesheet"

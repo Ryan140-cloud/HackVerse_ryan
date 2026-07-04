@@ -1,51 +1,254 @@
-// HackVerse Prisma schema
-// Datasource uses MongoDB (Prisma has first-class MongoDB support) via MONGO_URL.
-// If you migrate to PostgreSQL later, only switch the provider + connection string.
+// HackVerse Prisma schema \u2014 PostgreSQL (Neon/Supabase-ready).
+// Swap `provider` and DATABASE_URL to migrate.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGO_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------
+// AUTH \u2014 NextAuth v5 core tables
+// -----------------------------------------------------------------------
+
+enum Role {
+  USER
+  ORGANIZER
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           Role      @default(USER)
+  bio            String?
+  location       String?
+  skills         String[]  @default([])
+  technologies   String[]  @default([])
+  experience     String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  bookmarks      Bookmark[]
+  notifications  Notification[]
+  reminders      Reminder[]
+  organizerFor   Organizer[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+// -----------------------------------------------------------------------
+// DOMAIN \u2014 hackathons, categories, organizers, bookmarks
+// -----------------------------------------------------------------------
+
+enum HackathonStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+enum HackathonMode {
+  ONLINE
+  HYBRID
+  OFFLINE
+}
+
+model Category {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  emoji       String?
+  color       String?
+  description String?
+  hackathons  Hackathon[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Organizer {
+  id           String      @id @default(cuid())
+  slug         String      @unique
+  name         String
+  description  String?
+  website      String?
+  logoUrl      String?
+  country      String?
+  verified     Boolean     @default(false)
+  ownerId      String?
+  owner        User?       @relation(fields: [ownerId], references: [id])
+  hackathons   Hackathon[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Hackathon {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  slug         String   @unique
+  id           String          @id @default(cuid())
+  slug         String          @unique
   title        String
   description  String
-  source       String   // e.g. Devpost, Devfolio, MLH, Unstop
+  source       String
   sourceUrl    String
   bannerUrl    String?
-  location     String   // Online | City, Country
-  mode         String   // Online | Hybrid | Offline
+  location     String
+  mode         HackathonMode   @default(ONLINE)
   startDate    DateTime
   endDate      DateTime
   registerBy   DateTime?
   prizePool    String?
-  tags         String[]
-  themes       String[]
-  organizer    String
-  participants Int      @default(0)
-  featured     Boolean  @default(false)
-  status       String   @default("upcoming") // upcoming | ongoing | ended
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  prizeValue   Int             @default(0)
+  tags         String[]        @default([])
+  themes       String[]        @default([])
+  participants Int             @default(0)
+  featured     Boolean         @default(false)
+  trending     Boolean         @default(false)
+  status       HackathonStatus @default(PENDING)
+  categoryId   String?
+  category     Category?       @relation(fields: [categoryId], references: [id])
+  organizerId  String?
+  organizer    Organizer?      @relation(fields: [organizerId], references: [id])
+  bookmarks    Bookmark[]
+  reminders    Reminder[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([status])
+  @@index([startDate])
+  @@index([categoryId])
+  @@index([organizerId])
 }
 
-model Subscriber {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  createdAt DateTime @default(now())
+model Bookmark {
+  id          String    @id @default(cuid())
+  userId      String
+  hackathonId String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hackathon   Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@unique([userId, hackathonId])
 }
 
-model ContactMessage {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  email     String
-  subject   String
-  message   String
-  createdAt DateTime @default(now())
+// -----------------------------------------------------------------------
+// NOTIFICATIONS & REMINDERS
+// -----------------------------------------------------------------------
+
+enum NotificationType {
+  SYSTEM
+  DEADLINE
+  START
+  RECOMMENDATION
+  AUDIT
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType @default(SYSTEM)
+  title     String
+  body      String?
+  href      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+}
+
+enum ReminderKind {
+  REGISTRATION_DEADLINE
+  HACKATHON_START
+}
+
+model Reminder {
+  id          String       @id @default(cuid())
+  userId      String
+  hackathonId String
+  kind        ReminderKind
+  fireAt      DateTime
+  sent        Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hackathon Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+
+  @@index([fireAt, sent])
+}
+
+// -----------------------------------------------------------------------
+// AUDIT LOG
+// -----------------------------------------------------------------------
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  actorEmail String?
+  action     String
+  entity     String
+  entityId   String?
+  metadata   Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([action])
 }

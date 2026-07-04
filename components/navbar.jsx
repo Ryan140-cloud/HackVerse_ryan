@@ -8,11 +8,13 @@ import { Menu, Rocket, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ThemeSwitcher } from '@/components/theme-switcher';
+import { UserMenu } from '@/components/auth/user-menu';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/explore', label: 'Explore' },
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -58,9 +60,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   'relative px-4 py-2 text-sm font-medium transition-colors',
-                  active
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
+                  active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {link.label}
@@ -78,15 +78,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeSwitcher />
-          <Button
-            asChild
-            size="sm"
-            className="hidden md:inline-flex bg-gradient-to-r from-primary to-fuchsia-500 text-primary-foreground hover:opacity-90"
-          >
-            <Link href="/explore">
-              <Sparkles className="mr-2 h-4 w-4" /> Explore
-            </Link>
-          </Button>
+          <UserMenu />
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, Star, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HackathonCard } from '@/components/hackathon-card';
-import { HACKATHONS } from '@/lib/data/hackathons';
+import { getFeatured } from '@/lib/data/hackathons';
 
 export function FeaturedHackathons() {
-  const featured = HACKATHONS.filter((h) => h.featured).slice(0, 6);
+  const featured = getFeatured(new Date(), 6);
 
   return (
     <section className="container py-20">
@@ -32,11 +32,24 @@ export function FeaturedHackathons() {
         </Button>
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {featured.map((h, i) => (
-          <HackathonCard key={h.id} hackathon={h} index={i} />
-        ))}
-      </div>
+      {featured.length === 0 ? (
+        <div className="mt-8 rounded-2xl border border-dashed bg-card p-10 text-center">
+          <Inbox className="mx-auto h-8 w-8 text-muted-foreground" />
+          <p className="mt-3 font-medium">No featured hackathons at the moment</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Browse the full catalogue instead.
+          </p>
+          <Button asChild variant="outline" size="sm" className="mt-4">
+            <Link href="/explore">Open explore</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featured.map((h, i) => (
+            <HackathonCard key={h.id} hackathon={h} index={i} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

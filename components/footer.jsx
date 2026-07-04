@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Rocket, Github, Twitter, Linkedin } from 'lucide-react';
+import { Rocket, Github, Twitter, Linkedin, MapPin } from 'lucide-react';
+import { siteConfig } from '@/lib/config/site';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -9,8 +10,8 @@ export function Footer() {
       title: 'Product',
       links: [
         { href: '/explore', label: 'Explore' },
+        { href: '/dashboard', label: 'Dashboard' },
         { href: '/#features', label: 'Features' },
-        { href: '/#sources', label: 'Sources' },
       ],
     },
     {
@@ -43,14 +44,17 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              The single dashboard for every hackathon that matters. Discover,
-              track and win — without tab-hopping.
+              {siteConfig.description}
             </p>
+            <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5" />
+              <span>HQ: {siteConfig.address.display}</span>
+            </div>
             <div className="mt-6 flex gap-3">
               {[
-                { href: '#', icon: Github, label: 'GitHub' },
-                { href: '#', icon: Twitter, label: 'Twitter' },
-                { href: '#', icon: Linkedin, label: 'LinkedIn' },
+                { href: siteConfig.socials.github, icon: Github, label: 'GitHub' },
+                { href: siteConfig.socials.twitter, icon: Twitter, label: 'Twitter' },
+                { href: siteConfig.socials.linkedin, icon: Linkedin, label: 'LinkedIn' },
               ].map((s) => {
                 const Icon = s.icon;
                 return (
@@ -58,6 +62,8 @@ export function Footer() {
                     key={s.label}
                     href={s.href}
                     aria-label={s.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
                   >
                     <Icon className="h-4 w-4" />
@@ -88,10 +94,10 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 md:flex-row">
           <p className="text-xs text-muted-foreground">
-            © {year} HackVerse. Built for students who ship.
+            {siteConfig.copyright(year)}
           </p>
           <p className="text-xs text-muted-foreground">
-            Made with ❤️ and a lot of caffeine.
+            Crafted by {siteConfig.founder.name} \u00B7 {siteConfig.address.display}
           </p>
         </div>
       </div>

@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { Flame, ArrowRight } from 'lucide-react';
+import { Flame, ArrowRight, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { HackathonCard } from '@/components/hackathon-card';
-import { HACKATHONS } from '@/lib/data/hackathons';
+import { getTrending } from '@/lib/data/hackathons';
 
 export function TrendingHackathons() {
-  const trending = HACKATHONS.filter((h) => h.trending).slice(0, 8);
+  const trending = getTrending(new Date(), 8);
 
   return (
     <section className="container py-20">
@@ -33,16 +33,26 @@ export function TrendingHackathons() {
         </Button>
       </div>
 
-      <ScrollArea className="mt-8 w-full">
-        <div className="flex gap-6 pb-4">
-          {trending.map((h, i) => (
-            <div key={h.id} className="w-[320px] shrink-0 md:w-[360px]">
-              <HackathonCard hackathon={h} index={i} />
-            </div>
-          ))}
+      {trending.length === 0 ? (
+        <div className="mt-8 rounded-2xl border border-dashed bg-card p-10 text-center">
+          <Inbox className="mx-auto h-8 w-8 text-muted-foreground" />
+          <p className="mt-3 font-medium">No trending hackathons right now</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            New events are indexed hourly \u2014 the feed will refresh shortly.
+          </p>
         </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      ) : (
+        <ScrollArea className="mt-8 w-full">
+          <div className="flex gap-6 pb-4">
+            {trending.map((h, i) => (
+              <div key={h.id} className="w-[320px] shrink-0 md:w-[360px]">
+                <HackathonCard hackathon={h} index={i} />
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      )}
     </section>
   );
 }

@@ -1,14 +1,21 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Radio, ArrowRight } from 'lucide-react';
+import { Radio, ArrowRight, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HackathonCard } from '@/components/hackathon-card';
-import { HACKATHONS } from '@/lib/data/hackathons';
+import { getOngoing } from '@/lib/data/hackathons';
 
 export function LiveHackathons() {
-  const live = HACKATHONS.filter((h) => h.status === 'ongoing').slice(0, 3);
+  // Compute on client too so the badge/state stays fresh across tab returns.
+  const [live, setLive] = useState(() => getOngoing().slice(0, 3));
+  useEffect(() => {
+    setLive(getOngoing().slice(0, 3));
+    const interval = setInterval(() => setLive(getOngoing().slice(0, 3)), 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="border-y bg-muted/20">
@@ -39,11 +46,24 @@ export function LiveHackathons() {
           </Button>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {live.map((h, i) => (
-            <HackathonCard key={h.id} hackathon={h} index={i} />
-          ))}
-        </div>
+        {live.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-dashed bg-card p-10 text-center">
+            <Inbox className="mx-auto h-8 w-8 text-muted-foreground" />
+            <p className="mt-3 font-medium">No hackathons are live at this second</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Check back soon or explore upcoming events.
+            </p>
+            <Button asChild variant="outline" size="sm" className="mt-4">
+              <Link href="/explore?status=upcoming">See upcoming</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {live.map((h, i) => (
+              <HackathonCard key={h.id} hackathon={h} index={i} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
