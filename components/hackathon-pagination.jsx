@@ -36,7 +36,7 @@ export function HackathonPagination({ page, totalPages, onChange }) {
       {pages.map((p, i) =>
         p === '...' ? (
           <span key={`e${i}`} className="px-2 text-muted-foreground">
-            \u2026
+            …
           </span>
         ) : (
           <button

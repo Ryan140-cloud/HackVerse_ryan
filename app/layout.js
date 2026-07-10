@@ -3,12 +3,13 @@ import { Providers } from './providers';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Toaster } from '@/components/ui/sonner';
+import { ChatWidget } from '@/components/ai/chat-widget';
 import { siteConfig } from '@/lib/config/site';
 
 export const metadata = {
   title: {
-    default: `${siteConfig.name} \u2014 Discover Hackathons in One Place`,
-    template: `%s \u00B7 ${siteConfig.name}`,
+    default: `${siteConfig.name} — Discover Hackathons in One Place`,
+    template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: [
@@ -20,7 +21,7 @@ export const metadata = {
   publisher: siteConfig.owner,
   metadataBase: new URL(siteConfig.url),
   openGraph: {
-    title: `${siteConfig.name} \u2014 Discover Hackathons`,
+    title: `${siteConfig.name} — Discover Hackathons`,
     description: siteConfig.tagline,
     type: 'website',
     url: siteConfig.url,
@@ -46,6 +47,7 @@ export default function RootLayout({ children }) {
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <ChatWidget />
           <Toaster richColors position="top-right" />
         </Providers>
       </body>

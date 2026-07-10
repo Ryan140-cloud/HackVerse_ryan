@@ -1,16 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Star, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HackathonCard } from '@/components/hackathon-card';
-import { getFeatured } from '@/lib/data/hackathons';
 
 export function FeaturedHackathons() {
-  const featured = getFeatured(new Date(), 6);
+  const [featured, setFeatured] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch('/api/featured', { cache: 'no-store' });
+        const j = await r.json();
+        if (!cancelled) setFeatured((j.items || []).slice(0, 6));
+      } catch {
+        if (!cancelled) setFeatured([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
-    <section className="container py-20">
+    <section className="container py-16 md:py-20">
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-fuchsia-500 text-white">
@@ -32,7 +49,7 @@ export function FeaturedHackathons() {
         </Button>
       </div>
 
-      {featured.length === 0 ? (
+      {loading ? null : featured.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed bg-card p-10 text-center">
           <Inbox className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-3 font-medium">No featured hackathons at the moment</p>

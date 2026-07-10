@@ -14,9 +14,9 @@ import { cn } from '@/lib/utils';
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/explore', label: 'Explore' },
+  { href: '/study', label: 'Study Hub' },
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
 ];
 
 export function Navbar() {
@@ -59,7 +59,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative px-4 py-2 text-sm font-medium transition-colors',
+                  'relative px-3 py-2 text-sm font-medium transition-colors',
                   active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                 )}
               >
@@ -77,6 +77,9 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Button asChild size="sm" variant="outline" className="hidden md:inline-flex">
+            <Link href="/submit"><Sparkles className="mr-1.5 h-3.5 w-3.5" /> Submit</Link>
+          </Button>
           <ThemeSwitcher />
           <UserMenu />
 
@@ -103,12 +106,9 @@ export function Navbar() {
                     {l.label}
                   </Link>
                 ))}
-                <Button
-                  asChild
-                  className="mt-4 bg-gradient-to-r from-primary to-fuchsia-500"
-                >
-                  <Link href="/explore" onClick={() => setOpen(false)}>
-                    <Sparkles className="mr-2 h-4 w-4" /> Explore
+                <Button asChild className="mt-4 bg-gradient-to-r from-primary to-fuchsia-500">
+                  <Link href="/submit" onClick={() => setOpen(false)}>
+                    <Sparkles className="mr-2 h-4 w-4" /> Submit hackathon
                   </Link>
                 </Button>
               </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -15,14 +15,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { CHAT_SUGGESTIONS, replyTo } from '@/lib/ai/chatbot';
+import { CHAT_SUGGESTIONS } from '@/lib/ai/chatbot';
 import { usePreferences } from '@/lib/ai/use-preferences';
 import { cn } from '@/lib/utils';
 
 const WELCOME = {
   role: 'bot',
-  text: "Hey! I'm Verse \u2014 your hackathon co-pilot. Ask me anything about hackathons, or try a suggestion below.",
+  text:
+    "Hey! I'm Verse — your AI hackathon co-pilot, powered by live data from HackVerse.\n\nAsk me anything about hackathons, or try one of the suggestions below.",
 };
+
+// Generate/persist a lightweight session id so multi-turn chats stay coherent.
+function useSessionId() {
+  return useMemo(() => {
+    if (typeof window === 'undefined') return 'ssr';
+    let sid = window.localStorage.getItem('hv_chat_sid');
+    if (!sid) {
+      sid = `sid_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+      window.localStorage.setItem('hv_chat_sid', sid);
+    }
+    return sid;
+  }, []);
+}
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -31,25 +45,51 @@ export function ChatWidget() {
   const [thinking, setThinking] = useState(false);
   const scrollRef = useRef(null);
   const { prefs, bookmarks } = usePreferences();
+  const sessionId = useSessionId();
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [msgs, open]);
+  }, [msgs, open, thinking]);
 
-  const send = (rawText) => {
+  const send = async (rawText) => {
     const content = String(rawText ?? text).trim();
-    if (!content) return;
+    if (!content || thinking) return;
     setMsgs((m) => [...m, { role: 'user', text: content }]);
     setText('');
     setThinking(true);
-    // Simulate latency for placeholder "thinking".
-    setTimeout(() => {
-      const reply = replyTo(content, { ...prefs, bookmarks });
-      setMsgs((m) => [...m, { role: 'bot', ...reply }]);
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: content,
+          sessionId,
+          prefs: { ...prefs, bookmarks },
+        }),
+      });
+      const j = await r.json();
+      setMsgs((m) => [
+        ...m,
+        {
+          role: 'bot',
+          text: j.text || "I didn't catch that — try rephrasing?",
+          hackathons: j.hackathons || [],
+        },
+      ]);
+    } catch (e) {
+      setMsgs((m) => [
+        ...m,
+        {
+          role: 'bot',
+          text:
+            "I couldn't reach the server — please check your connection and try again.",
+        },
+      ]);
+    } finally {
       setThinking(false);
-    }, 550 + Math.random() * 400);
+    }
   };
 
   return (
@@ -105,7 +145,7 @@ export function ChatWidget() {
                 <div>
                   <div className="text-sm font-semibold">Verse AI</div>
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    Placeholder \u00b7 rule-based
+                    Live · grounded in your catalogue
                   </div>
                 </div>
               </div>
@@ -122,7 +162,7 @@ export function ChatWidget() {
                 {thinking && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Loader2 className="h-3 w-3 animate-spin" />
-                    Verse is thinking\u2026
+                    Verse is thinking…
                   </div>
                 )}
               </div>
@@ -154,8 +194,9 @@ export function ChatWidget() {
               <Input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Ask about hackathons\u2026"
+                placeholder="Ask about hackathons…"
                 className="h-9"
+                disabled={thinking}
               />
               <Button
                 type="submit"
@@ -201,9 +242,7 @@ function MessageBubble({ msg }) {
                     : 'bg-background hover:bg-accent'
                 )}
               >
-                <span className="line-clamp-1 font-medium">
-                  {h.title}
-                </span>
+                <span className="line-clamp-1 font-medium">{h.title}</span>
                 <ExternalLink className="h-3 w-3 shrink-0" />
               </Link>
             ))}

@@ -13,6 +13,7 @@ import {
   ScrollText,
   Shield,
   Rocket,
+  Inbox,
   Menu,
   LogOut,
   ArrowLeft,
@@ -37,6 +38,7 @@ import {
 const LINKS = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
   { href: '/admin/hackathons', label: 'Hackathons', icon: Trophy },
+  { href: '/admin/submissions', label: 'Submissions', icon: Inbox },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/organizers', label: 'Organizers', icon: Building2 },
   { href: '/admin/categories', label: 'Categories', icon: Tags },
@@ -124,7 +126,7 @@ export function AdminShell({ children }) {
             </Badge>
           </div>
           <div className="text-[10px] text-muted-foreground">
-            Signed in as {user?.email || 'demo\u00b7admin'}
+            Signed in as {user?.email || 'demo·admin'}
           </div>
           {!user && (
             <Button

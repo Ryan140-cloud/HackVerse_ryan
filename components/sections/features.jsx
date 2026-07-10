@@ -5,7 +5,7 @@ import { Bell, Filter, Globe, Layers, Trophy, Zap } from 'lucide-react';
 import { SectionHeader } from './section-header';
 
 const FEATURES = [
-  { icon: Globe, title: 'Every source, one feed', desc: 'Devpost, Devfolio, MLH, Unstop and more \u2014 unified into a single, searchable stream.' },
+  { icon: Globe, title: 'Every source, one feed', desc: 'Devpost, Devfolio, MLH, Unstop and more — unified into a single, searchable stream.' },
   { icon: Filter, title: 'Smart filters', desc: 'Drill down by mode, tags, prize pool, deadline or region in a single click.' },
   { icon: Bell, title: 'Never miss a deadline', desc: 'Personalised alerts before the registration window slams shut on you.' },
   { icon: Trophy, title: 'Track your wins', desc: 'Bookmark, categorise and showcase every hackathon you have shipped in.' },

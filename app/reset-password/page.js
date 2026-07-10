@@ -77,7 +77,7 @@ function ResetPasswordInner() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="container py-20 text-center text-muted-foreground">Loading\u2026</div>}>
+    <Suspense fallback={<div className="container py-20 text-center text-muted-foreground">Loading…</div>}>
       <ResetPasswordInner />
     </Suspense>
   );

@@ -1,17 +1,17 @@
 import { Badge } from '@/components/ui/badge';
 import { siteConfig } from '@/lib/config/site';
 
-export const metadata = { title: 'Privacy Policy \u2014 HackVerse' };
+export const metadata = { title: 'Privacy Policy — HackVerse' };
 
 export default function PrivacyPage() {
   const sections = [
-    { h: '1. Information we collect', p: `We collect only what we need to run ${siteConfig.name}: your email if you subscribe, basic analytics on which pages you visit, and hackathon preferences you save. We do not sell your data \u2014 ever.` },
+    { h: '1. Information we collect', p: `We collect only what we need to run ${siteConfig.name}: your email if you subscribe, basic analytics on which pages you visit, and hackathon preferences you save. We do not sell your data — ever.` },
     { h: '2. How we use it', p: `To surface the right hackathons to you, to remind you of deadlines, and to make ${siteConfig.name} faster and easier to use. Aggregated stats may be shared with partner organizers.` },
     { h: '3. Cookies', p: 'We use privacy-respecting analytics and a single functional cookie to remember your theme preference. No third-party advertising trackers.' },
     { h: '4. Third-party sources', p: `${siteConfig.name} aggregates public information from platforms like Devpost, Devfolio, MLH and Unstop. Their content remains subject to their own terms.` },
     { h: '5. Your rights', p: `You can request export or deletion of any personal data at any time by emailing ${siteConfig.contact.privacyEmail}.` },
     { h: '6. Data controller', p: `${siteConfig.name} is operated by ${siteConfig.owner}, headquartered at ${siteConfig.address.display}.` },
-    { h: '7. Changes', p: 'We\u2019ll post any material changes here and, when possible, notify you by email.' },
+    { h: '7. Changes', p: 'We’ll post any material changes here and, when possible, notify you by email.' },
   ];
 
   return (

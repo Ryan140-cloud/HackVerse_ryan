@@ -32,7 +32,7 @@ export function Testimonials() {
               ))}
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              \u201C{t.quote}\u201D
+              “{t.quote}”
             </p>
             <div className="mt-6 flex items-center gap-3 border-t pt-4">
               <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-primary/20">

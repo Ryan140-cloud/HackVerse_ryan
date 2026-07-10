@@ -59,7 +59,7 @@ export function PreferencesDialog({ open, onOpenChange, showTrigger = false }) {
             <div>
               <DialogTitle>Tell us about your builder DNA</DialogTitle>
               <DialogDescription>
-                We&apos;ll use this to hand-pick hackathons \u2014 you can change it anytime.
+                We&apos;ll use this to hand-pick hackathons — you can change it anytime.
               </DialogDescription>
             </div>
           </div>

@@ -26,7 +26,7 @@ export default function ContactPage() {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error('Failed');
-      toast.success('Message sent! We\u2019ll get back to you soon.');
+      toast.success('Message sent! We’ll get back to you soon.');
       e.currentTarget.reset();
     } catch {
       toast.error('Something went wrong. Try again.');
@@ -55,7 +55,7 @@ export default function ContactPage() {
             Let&apos;s <span className="text-gradient">talk</span>.
           </h1>
           <p className="mt-4 text-muted-foreground">
-            Reach {siteConfig.founder.name} and the {siteConfig.name} team directly \u2014 we reply to every message.
+            Reach {siteConfig.founder.name} and the {siteConfig.name} team directly — we reply to every message.
           </p>
         </motion.div>
 
@@ -90,7 +90,7 @@ export default function ContactPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="subject">Subject</Label>
-              <Input id="subject" name="subject" placeholder="What\u2019s this about?" required />
+              <Input id="subject" name="subject" placeholder="What’s this about?" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="message">Message</Label>

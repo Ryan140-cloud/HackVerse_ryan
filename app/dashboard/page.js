@@ -246,7 +246,7 @@ export default function DashboardPage() {
             <CardContent>
               {activity.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Nothing yet \u2014 explore hackathons and bookmarks to build your feed.
+                  Nothing yet — explore hackathons and bookmarks to build your feed.
                 </p>
               ) : (
                 <ul className="space-y-2">
@@ -255,7 +255,7 @@ export default function DashboardPage() {
                       <div className="h-2 w-2 rounded-full bg-primary" />
                       <span className="capitalize">{a.action}</span>
                       {a.meta?.title && (
-                        <span className="text-muted-foreground">\u00b7 {a.meta.title}</span>
+                        <span className="text-muted-foreground">· {a.meta.title}</span>
                       )}
                       <span className="ml-auto text-xs text-muted-foreground">
                         {new Date(a.at).toLocaleDateString()}

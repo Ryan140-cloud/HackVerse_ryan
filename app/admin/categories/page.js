@@ -95,7 +95,7 @@ export default function AdminCategoriesPage() {
             </div>
             <div className="space-y-1.5">
               <Label>Emoji</Label>
-              <Input value={form.emoji} onChange={(e) => setForm((f) => ({ ...f, emoji: e.target.value }))} placeholder="\uD83E\uDD16" />
+              <Input value={form.emoji} onChange={(e) => setForm((f) => ({ ...f, emoji: e.target.value }))} placeholder="🤖" />
             </div>
           </div>
           <DialogFooter>

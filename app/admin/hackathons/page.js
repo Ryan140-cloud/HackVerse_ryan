@@ -111,7 +111,7 @@ export default function AdminHackathonsPage() {
                       </div>
                       <div className="min-w-0">
                         <div className="line-clamp-1 text-sm font-medium">{h.title}</div>
-                        <div className="text-xs text-muted-foreground">{h.location} \u00B7 {h.mode}</div>
+                        <div className="text-xs text-muted-foreground">{h.location} · {h.mode}</div>
                       </div>
                     </div>
                   </TableCell>

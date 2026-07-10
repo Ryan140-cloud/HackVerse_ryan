@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { MailCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const metadata = { title: 'Verify email \u2014 HackVerse' };
+export const metadata = { title: 'Verify email — HackVerse' };
 
 export default function VerifyEmailPage() {
   return (

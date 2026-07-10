@@ -97,7 +97,7 @@ export function Footer() {
             {siteConfig.copyright(year)}
           </p>
           <p className="text-xs text-muted-foreground">
-            Crafted by {siteConfig.founder.name} \u00B7 {siteConfig.address.display}
+            Crafted by {siteConfig.founder.name} · {siteConfig.address.display}
           </p>
         </div>
       </div>

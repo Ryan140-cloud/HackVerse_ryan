@@ -86,7 +86,7 @@ export function RecommendationCard({ hackathon, index = 0 }) {
           </div>
           <div className="flex items-center gap-1.5">
             <Trophy className="h-3.5 w-3.5 text-primary" />
-            <span className="truncate">{hackathon.prizePool || '\u2014'}</span>
+            <span className="truncate">{hackathon.prizePool || '—'}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Users className="h-3.5 w-3.5 text-primary" />

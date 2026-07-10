@@ -37,7 +37,7 @@ export function HeroSearch() {
             variant="outline"
             className="mb-6 gap-1.5 border-primary/30 bg-primary/5 px-3 py-1 text-primary"
           >
-            <Sparkles className="h-3.5 w-3.5" /> Live in beta \u00B7 June 2025
+            <Sparkles className="h-3.5 w-3.5" /> Live in beta · June 2025
           </Badge>
           <h1 className="text-balance font-[Space_Grotesk] text-5xl font-bold tracking-tight md:text-7xl">
             Every hackathon,{' '}
@@ -45,7 +45,7 @@ export function HeroSearch() {
           </h1>
           <p className="mt-6 text-balance text-lg text-muted-foreground md:text-xl">
             Discover ongoing and upcoming hackathons from Devpost, Devfolio,
-            MLH and Unstop \u2014 all in one lightning-fast dashboard.
+            MLH and Unstop — all in one lightning-fast dashboard.
           </p>
 
           {/* Search Bar */}

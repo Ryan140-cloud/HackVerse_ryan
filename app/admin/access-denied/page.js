@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ShieldOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const metadata = { title: 'Access denied \u00B7 HackVerse' };
+export const metadata = { title: 'Access denied · HackVerse' };
 
 export default function AccessDeniedPage() {
   return (

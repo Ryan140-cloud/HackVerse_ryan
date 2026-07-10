@@ -82,7 +82,7 @@ export default function AdminAuditLogsPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge className={`border-0 font-normal ${ACTION_STYLES[l.action] || 'bg-muted'}`}>{l.action}</Badge>
                   <span className="text-sm font-medium">{l.entity}</span>
-                  <span className="text-sm text-muted-foreground">\u00b7 {l.target}</span>
+                  <span className="text-sm text-muted-foreground">· {l.target}</span>
                 </div>
                 <div className="mt-1 flex flex-wrap gap-3 text-xs text-muted-foreground">
                   <span>By {l.actor}</span>

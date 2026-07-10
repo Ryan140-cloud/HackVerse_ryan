@@ -6,20 +6,32 @@ import { motion } from 'framer-motion';
 import { Radio, ArrowRight, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HackathonCard } from '@/components/hackathon-card';
-import { getOngoing } from '@/lib/data/hackathons';
 
 export function LiveHackathons() {
-  // Compute on client too so the badge/state stays fresh across tab returns.
-  const [live, setLive] = useState(() => getOngoing().slice(0, 3));
+  const [live, setLive] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    setLive(getOngoing().slice(0, 3));
-    const interval = setInterval(() => setLive(getOngoing().slice(0, 3)), 60_000);
-    return () => clearInterval(interval);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch('/api/ongoing', { cache: 'no-store' });
+        const j = await r.json();
+        if (!cancelled) setLive((j.items || []).slice(0, 3));
+      } catch {
+        if (!cancelled) setLive([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    const t = setInterval(load, 60_000);
+    return () => { cancelled = true; clearInterval(t); };
   }, []);
 
   return (
     <section className="border-y bg-muted/20">
-      <div className="container py-20">
+      <div className="container py-16 md:py-20">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div className="flex items-center gap-3">
             <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-500">
@@ -35,7 +47,7 @@ export function LiveHackathons() {
                 <span className="text-emerald-500">Live</span> right now
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Join in \u2014 these hackathons are happening as you read this.
+                Join in — these hackathons are happening as you read this.
               </p>
             </div>
           </div>
@@ -46,7 +58,7 @@ export function LiveHackathons() {
           </Button>
         </div>
 
-        {live.length === 0 ? (
+        {loading ? null : live.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed bg-card p-10 text-center">
             <Inbox className="mx-auto h-8 w-8 text-muted-foreground" />
             <p className="mt-3 font-medium">No hackathons are live at this second</p>

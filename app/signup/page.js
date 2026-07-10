@@ -33,7 +33,7 @@ export default function SignUpPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
-      toast.success('Account created \u2014 signing you in\u2026');
+      toast.success('Account created — signing you in…');
       const login = await signIn('credentials', {
         email: form.email,
         password: form.password,

@@ -8,7 +8,7 @@ export async function POST(request) {
     const { email } = await request.json();
     if (!email) return NextResponse.json({ error: 'Email is required.' }, { status: 400 });
 
-    // Silent success \u2014 never reveal whether the account exists.
+    // Silent success — never reveal whether the account exists.
     if (prisma) {
       const user = await prisma.user.findUnique({ where: { email } });
       if (user) {

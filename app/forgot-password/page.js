@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
         </p>
         {sent ? (
           <div className="mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-center text-sm text-emerald-500">
-            \u2713 Check your inbox for a reset link.
+            ✓ Check your inbox for a reset link.
           </div>
         ) : (
           <form onSubmit={submit} className="mt-8 space-y-3">
